@@ -4,7 +4,7 @@ Data science is the field of exploring, manipulating, and analyzing data, and us
  
 Data scientists are usually curious people who take a stand on an argument and judge their findings and results. They analyze data using the appropriate tools, use storytelling skills to communicate their findings to relevant stakeholders, and propose solutions that aim to provide value to the business. They also use data to analyze the market, make comparisons to competition, and make recommendations of when and where an organization's product or services will be the most successful.
 
-### The ten components of a report at the end of a data science project include:
+#### The ten components of a report at the end of a data science project include:
 1. Cover Page - include the report's title, names of authors, their affiliations and contacts, name of the institutional publisher, and date of publication
 2. Table of Contents - a map or list of topics in the report
 3. Executive Summary (Abstract) - Explains the crux of the arguments 
