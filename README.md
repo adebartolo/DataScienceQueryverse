@@ -1,4 +1,4 @@
-## The Introductory Data Science Analysis Report
+# The Introductory Data Science Analysis Report
 
 Data science is the field of exploring, manipulating, and analyzing data, and using data to answer questions or make recommendations.
  
