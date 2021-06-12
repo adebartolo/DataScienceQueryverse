@@ -37,12 +37,15 @@ Three different types of classifiers were chosen, K-Nearest Neighbor, Multiple L
 ### **Experiments**
 
 **K-Nearest Neighbor**
+
 The baseline model was trained with a k = 235 and had an accuracy rating of 92.45%. Normalization was used to regulate the database as the values were vastly different and would distort the algorithm. The data that was chosen to predict promotion status were performance values and the age of the employee. The pieces of data used were Number of Training, Previous Year Rating, KPI > 80, Awards Won, and Average Training Score. This accuracy rating showed a slight improvement in comparison to a separate model that used the same data as previously listed but also included the age of the employee. The accuracy rating for this separate model was 92.20%. 
 
 **Multiple Linear Regression**
+
 Multiple Linear Regression was used to create several different models in an attempt to find a high accuracy rating. Of the five different models created, the model with the highest accuracy rating was model five with 39.57%. Model five predicted Length of Service using Age, KPI>80, Number of Training, Awards Won, and Promotion Status. The next highest accuracy rating is 23.7% and used all variables to predict promotion. 
 
 **Decision Tree**
+
 The Decision Tree algorithm was used to navigate several courses of action as it relates to an employee’s experience. The first model was constructed to predict if an employee would be promoted based on meeting performance goals, Number of Training, Previous Year Ratings, Length of Service, Awards Won, and Average Training Score. This model held an accuracy rating of 93.39%. In comparison, the second model that was created had an accuracy rating of 92.05%. 
 
 ### **Results**
