@@ -15,43 +15,41 @@
 # =============================
 
 # --- Core Python Utilities ---
-import os                 # File system operations
-import sys                # System-level functions
-import time               # Timing code execution
-import json               # JSON file handling
-import yaml               # YAML file handling
-from io import BytesIO    # For byte stream handling (e.g. image downloads)
+import os
+import sys
+import time
+import json
+import yaml
+from io import BytesIO
 
-# --- PyTorch + AMP (Mixed Precision) ---
+# --- PyTorch & Mixed Precision ---
 import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
 from torch.amp import autocast, GradScaler
 
-# --- TorchVision (Models, Transforms, Datasets) ---
+# --- TorchVision: Models, Transforms, Datasets ---
 from torchvision import transforms, models
 from torchvision.datasets import ImageFolder
 
-# --- Hugging Face (Models, Datasets, Hub Access) ---
-from transformers import pipeline                   # Inference pipelines
-from datasets import load_dataset                   # Preloaded HF datasets
-from huggingface_hub import hf_hub_download         # Optional direct file/model access
+# --- Hugging Face Tools ---
+from transformers import pipeline
+from datasets import load_dataset
+from huggingface_hub import hf_hub_download
 
-# --- Image Handling + Web Requests ---
-from PIL import Image                               # Image loading/manipulation
-import requests                                     # Download images, APIs, etc.
+# --- Image Handling & Web Requests ---
+from PIL import Image
+import requests
 
-# --- Evaluation Metrics ---
+# --- Evaluation & Visualization ---
 from sklearn.metrics import classification_report, confusion_matrix
-
-# --- Streamlit UI ---
-import streamlit as st                              # For building web dashboards
-
-from sklearn.metrics import confusion_matrix, classification_report
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+
+# --- Streamlit UI ---
+import streamlit as st
 
 # =============================
 # Datasets
