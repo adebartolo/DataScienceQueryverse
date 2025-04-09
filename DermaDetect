@@ -1,4 +1,9 @@
 # =============================
+# A Python program that trains a deep learning model on skin condition images 
+# and classifies user-provided images to identify potential skin conditions (WIP).
+# =============================
+
+# =============================
 # Install Required Libraries
 # =============================
 
