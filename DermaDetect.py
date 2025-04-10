@@ -257,7 +257,7 @@ def predict_image(image_path):
     return label_names[predicted_class]
 
 # Example Usage:
-path="/content/bcc images.jpeg" #"/content/reddit bcc.png"
+path="/content/image.jpeg"
 result = predict_image(path)
 print("Predicted:", result)
 
