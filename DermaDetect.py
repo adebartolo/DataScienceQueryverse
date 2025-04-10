@@ -65,19 +65,7 @@ test_dataset  = load_dataset(data, split="test")
 # Model
 # =============================
 
-import torch
-import torch.nn as nn
-import torch.optim as optim
-from torch.utils.data import Dataset, DataLoader
-from torchvision import transforms, models
-from PIL import Image
-from torch.amp import autocast, GradScaler
-from datasets import load_dataset
-import sys
-import time
-import os
-
-# Custom PyTorch Dataset Wrapper
+# PyTorch Dataset Wrapper
 class SkinDataset(Dataset):
     def __init__(self, hf_dataset, transform=None):
         self.dataset = hf_dataset
