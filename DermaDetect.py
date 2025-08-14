@@ -1,20 +1,10 @@
-# =============================
 # A Python program that trains a deep learning model on skin condition images 
 # and classifies user-provided images to identify potential skin conditions (WIP).
-# =============================
-
-# =============================
-# Install Required Libraries
-# =============================
 
 # Core deep learning, model handling, datasets, UI & evaluation libraries
 !pip install torch torchvision transformers datasets pillow requests huggingface_hub scikit-learn streamlit
 
-# =============================
-# Imports
-# =============================
-
-# --- Core Python Utilities ---
+# Import libraries
 import os
 import sys
 import time
@@ -22,49 +12,43 @@ import json
 import yaml
 from io import BytesIO
 
-# --- PyTorch & Mixed Precision ---
+# PyTorch & Mixed Precision
 import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
 from torch.amp import autocast, GradScaler
 
-# --- TorchVision: Models, Transforms, Datasets ---
+# TorchVision: Models, Transforms, Datasets
 from torchvision import transforms, models
 from torchvision.datasets import ImageFolder
 
-# --- Hugging Face Tools ---
+# Hugging Face Tools
 from transformers import pipeline
 from datasets import load_dataset
 from huggingface_hub import hf_hub_download
 
-# --- Image Handling & Web Requests ---
+# Image Handling & Web Requests
 from PIL import Image
 import requests
 
-# --- Evaluation & Visualization ---
+# Evaluation & Visualization
 from sklearn.metrics import classification_report, confusion_matrix
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# --- Streamlit UI ---
+# Streamlit UI
 import streamlit as st
 
-# =============================
 # Datasets
-# =============================
-
 # load the separate splits if the dataset has train/validation/test splits
 data = "ahmed-ai/skin-lesions-classification-dataset"
 train_dataset = load_dataset(data, split="train")
 valid_dataset = load_dataset(data, split="validation")
 test_dataset  = load_dataset(data, split="test")
 
-# =============================
 # Model
-# =============================
-
 # PyTorch Dataset Wrapper
 class SkinDataset(Dataset):
     def __init__(self, hf_dataset, transform=None):
@@ -186,10 +170,8 @@ try:
 except SystemExit as e:
     print(f"Exit program {e}")
 
-# =============================
-# Evaluation
-# =============================
 
+# Evaluation
 model.eval()
 correct = 0
 total = 0
@@ -239,10 +221,8 @@ plt.title('Confusion Matrix')
 plt.tight_layout()
 plt.show()
 
-# =============================
-# Next Steps
-# =============================
 
+# Next Steps
 # Predict Function for New Images
 def predict_image(image_path):
     model.eval()
