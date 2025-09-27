@@ -1,0 +1,10 @@
+                 Variance
+              Low           High
+Bias  --------------------------------
+Low   |  Good Fit       |  Overfitting
+      |  (ideal)        |  (low bias,
+      |                 |   high variance)
+---------------------------------------
+High  |  Underfitting   |  Worst Case
+      |  (high bias,    |  (high bias,
+      |   low variance) |   high variance)
