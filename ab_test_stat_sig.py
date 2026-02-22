@@ -66,11 +66,6 @@ print(DF_GAM.head())
 # Differentiates between proportion metrics (CTR → z-test) and ratio/continuous metrics (CPC, CPM → t-test).
 # Outputs a clean, ordered table with lifts, p-values, and flags for warnings or significance
 
-import pandas as pd
-import numpy as np
-from scipy.stats import ttest_ind
-from statsmodels.stats.proportion import proportions_ztest
-
 # -------------------------------
 # Source Map
 # -------------------------------
