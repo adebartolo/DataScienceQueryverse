@@ -1,0 +1,62 @@
+AB Test Output Columns
+
+source
+  Meaning: Data source name from source_map
+  How to Read: Example: GAM_MW → the dataset used for this test.
+
+control_name
+  Meaning: Name of the control variant
+  How to Read: Example: mw-c → baseline group.
+
+variant_name
+  Meaning: Name of the variant
+  How to Read: Example: mw-t → group being tested.
+
+group columns
+  Meaning: Columns used for optional multi-level grouping
+  How to Read: Example: page_type=article, page_section=sports. Shows which subgroup this row corresponds to.
+
+min_date / max_date
+  Meaning: Earliest and latest dates in this group
+  How to Read: Helps know the time range of the data included.
+
+metric
+  Meaning: Metric being tested
+  How to Read: Example: ctr, cpc, revenue.
+
+control
+  Meaning: Metric value for the control group
+  How to Read: Example: 0.05 CTR → 5% click-through rate.
+
+variant
+  Meaning: Metric value for the variant group
+  How to Read: Example: 0.06 CTR → 6% click-through rate.
+
+absolute_lift
+  Meaning: variant − control
+  How to Read: Example: 0.01 → variant improved CTR by 1 percentage point. Always based on actual data, not bootstrap.
+
+relative_lift
+  Meaning: (variant − control) / control
+  How to Read: Example: 0.01 / 0.05 = 0.2 → 20% relative improvement. Uses actual values.
+
+p_value
+  Meaning: Statistical test p-value
+  How to Read:
+    - For proportions (ctr): z-test
+    - For ratios (cpc/cpm): t-test or bootstrap p-value
+    - <0.05 → statistically significant
+
+significant
+  Meaning: Boolean flag for p-value < α
+  How to Read: True → difference is statistically significant, False → not significant
+
+warning_flag
+  Meaning: Potential data issue
+  How to Read: True if metric missing, division by zero, or empty group; otherwise False
+
+ci_lower / ci_upper (if using bootstrap)
+  Meaning: 95% confidence interval for difference (variant − control)
+  How to Read:
+    - Positive range → variant likely better
+    - Includes 0 → difference may not be meaningful
