@@ -108,7 +108,7 @@ def apply_filters(df, filters):
     return df
 
 def bootstrap_ratio(control, variant, metric_func, n_iter=5000, random_state=42):
-    """Bootstrap test for ratio metrics"""
+    """Bootstrap test for ratio metrics; returns p-value and CI"""
     rng = np.random.default_rng(random_state)
     c_vals, v_vals = [], []
     for _ in range(n_iter):
@@ -121,7 +121,9 @@ def bootstrap_ratio(control, variant, metric_func, n_iter=5000, random_state=42)
     lift = v_vals - c_vals
     # Two-sided p-value
     p_val = 2 * min(np.mean(lift > 0), np.mean(lift < 0))
-    return np.mean(c_vals), np.mean(v_vals), p_val, np.percentile(lift, 2.5), np.percentile(lift, 97.5)
+    ci_lower = np.percentile(lift, 2.5)
+    ci_upper = np.percentile(lift, 97.5)
+    return p_val, ci_lower, ci_upper
 
 # -------------------------------
 # A/B Test Engine
@@ -186,6 +188,8 @@ def ab_test_engine(
             metric_lower = metric.lower()
             warning_flag = False
 
+            ci_lower = ci_upper = np.nan  # default if bootstrap not used
+
             # ---------------- Proportion Metrics ----------------
             if metric_lower in PROPORTION_METRICS:
                 c_val = safe_div(control["clicks"].sum(), control["impressions"].sum())
@@ -202,31 +206,29 @@ def ab_test_engine(
             elif metric_lower in RATIO_METRICS:
                 if metric_lower == "cpc":
                     metric_func = lambda df: safe_div(df["revenue"].sum(), df["clicks"].sum())
-                    c_actual = safe_div(control["revenue"].sum(), control["clicks"].sum())
-                    v_actual = safe_div(variant["revenue"].sum(), variant["clicks"].sum())
-                    if use_bootstrap:
-                        _, _, p_val, _, _ = bootstrap_ratio(control, variant, metric_func)
-                    else:
-                        # t-test per-row
-                        c_series = control["revenue"] / control["clicks"]
-                        v_series = variant["revenue"] / variant["clicks"]
-                        p_val = run_ttest(c_series, v_series)
-                    c_val, v_val = c_actual, v_actual
-
+                    c_val = safe_div(control["revenue"].sum(), control["clicks"].sum())
+                    v_val = safe_div(variant["revenue"].sum(), variant["clicks"].sum())
                 elif metric_lower == "cpm":
                     metric_func = lambda df: safe_div(df["revenue"].sum(), df["impressions"].sum()) * 1000
-                    c_actual = safe_div(control["revenue"].sum(), control["impressions"].sum()) * 1000
-                    v_actual = safe_div(variant["revenue"].sum(), variant["impressions"].sum()) * 1000
-                    if use_bootstrap:
-                        _, _, p_val, _, _ = bootstrap_ratio(control, variant, metric_func)
-                    else:
-                        c_series = control["revenue"] / control["impressions"] * 1000
-                        v_series = variant["revenue"] / variant["impressions"] * 1000
-                        p_val = run_ttest(c_series, v_series)
-                    c_val, v_val = c_actual, v_actual
+                    c_val = safe_div(control["revenue"].sum(), control["impressions"].sum()) * 1000
+                    v_val = safe_div(variant["revenue"].sum(), variant["impressions"].sum()) * 1000
                 else:
                     c_val = v_val = p_val = np.nan
                     warning_flag = True
+                    metric_func = None
+
+                # Bootstrap p-value & CI
+                if use_bootstrap and metric_func is not None:
+                    p_val, ci_lower, ci_upper = bootstrap_ratio(control, variant, metric_func)
+                # Fallback: t-test on per-row ratios
+                elif metric_func is not None:
+                    if metric_lower == "cpc":
+                        c_series = control["revenue"] / control["clicks"]
+                        v_series = variant["revenue"] / variant["clicks"]
+                    else:  # cpm
+                        c_series = control["revenue"] / control["impressions"] * 1000
+                        v_series = variant["revenue"] / variant["impressions"] * 1000
+                    p_val = run_ttest(c_series, v_series)
 
             # ---------------- Other Numeric Metrics ----------------
             else:
@@ -240,7 +242,7 @@ def ab_test_engine(
                     v_val = v_series.mean() if not v_series.empty else np.nan
                     p_val = run_ttest(c_series, v_series)
 
-            # ---------------- Lift ----------------
+            # ---------------- Lift (always based on actual values) ----------------
             abs_lift = v_val - c_val if pd.notna(c_val) else np.nan
             rel_lift = safe_div(abs_lift, c_val)
 
@@ -257,6 +259,8 @@ def ab_test_engine(
                 "absolute_lift": abs_lift,
                 "relative_lift": rel_lift,
                 "p_value": p_val,
+                "ci_lower": ci_lower,
+                "ci_upper": ci_upper,
                 "significant": p_val < alpha if pd.notna(p_val) else False,
                 "warning_flag": warning_flag or pd.isna(c_val) or pd.isna(v_val)
             }
@@ -272,7 +276,7 @@ def ab_test_engine(
     date_cols = ["min_date", "max_date"]
     metric_cols = [
         "metric", "control", "variant", "absolute_lift", "relative_lift",
-        "p_value", "significant", "warning_flag"
+        "p_value", "ci_lower", "ci_upper", "significant", "warning_flag"
     ]
     ordered_cols = base_cols + date_cols + group_cols + metric_cols
     ordered_cols = [col for col in ordered_cols if col in result_df.columns]
