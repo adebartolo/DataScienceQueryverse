@@ -34,7 +34,7 @@ variant
 
 absolute_lift
   Meaning: variant − control
-  How to Read: Example: 0.01 → variant improved CTR by 1 percentage point. Always based on actual data, not bootstrap.
+  How to Read: Example: 0.01 → variant improved CTR by 1 percentage point. Always based on actual data.
 
 relative_lift
   Meaning: (variant − control) / control
@@ -44,7 +44,7 @@ p_value
   Meaning: Statistical test p-value
   How to Read:
     - For proportions (ctr): z-test
-    - For ratios (cpc/cpm): t-test or bootstrap p-value
+    - For ratios or continuous (cpc/cpm): t-test
     - <0.05 → statistically significant
 
 significant
@@ -54,9 +54,3 @@ significant
 warning_flag
   Meaning: Potential data issue
   How to Read: True if metric missing, division by zero, or empty group; otherwise False
-
-ci_lower / ci_upper (if using bootstrap)
-  Meaning: 95% confidence interval for difference (variant − control)
-  How to Read:
-    - Positive range → variant likely better
-    - Includes 0 → difference may not be meaningful
