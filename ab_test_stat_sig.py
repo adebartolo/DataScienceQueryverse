@@ -221,9 +221,9 @@ results = ab_test_engine(
     source="GAM_MW",
     metrics=["ctr", "revenue", "clicks", "impressions", "capacity", "cpc", "cpm"],
     group_col=["page_type"],
-    filters={  "page_type": ["article", "homepage"],
-               "page_section": ["news", "xsports"], 
-             "date": ("2026-02-01", "2026-02-07") 
+    filters={  "page_type": ["article", "homepage"]
+               ,"page_section": ["news", "xsports"]
+               #,"date": ("2026-02-01", "2026-02-07") 
     }
 )
 
