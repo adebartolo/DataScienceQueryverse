@@ -1,56 +1,109 @@
-AB Test Output Columns
+A/B TEST OUTPUT DOCUMENTATION (FULL STATISTICAL GUIDE)
 
-source
-  Meaning: Data source name from source_map
-  How to Read: Example: GAM_MW → the dataset used for this test.
+  ---------------------
+  CORE OUTPUT COLUMNS
+  ---------------------
 
-control_name
-  Meaning: Name of the control variant
-  How to Read: Example: mw-c → baseline group.
+source Meaning: Data source used for this test (from source_map).
+Example: GAM_MW.
 
-variant_name
-  Meaning: Name of the variant
-  How to Read: Example: mw-t → group being tested.
+control_name Meaning: Baseline group name. Example: mw-c.
 
-group columns
-  Meaning: Columns used for optional multi-level grouping
-  How to Read: Example: page_type=article, page_section=sports. Shows which subgroup this row corresponds to.
+variant_name Meaning: Treatment group being tested. Example: mw-t.
 
-min_date / max_date
-  Meaning: Earliest and latest dates in this group
-  How to Read: Helps know the time range of the data included.
+group columns Meaning: Optional subgroup breakdowns (page_type,
+page_section, etc.). Helps interpret segment-level performance.
 
-metric
-  Meaning: Metric being tested
-  How to Read: Example: ctr, cpc, revenue.
+min_date / max_date Meaning: Date range included in analysis. Important
+for seasonality and experiment duration validation.
 
-control
-  Meaning: Metric value for the control group
-  How to Read: Example: 0.05 CTR → 5% click-through rate.
+metric Meaning: Metric being tested (ctr, revenue, cpc, fill_rate,
+etc.).
 
-variant
-  Meaning: Metric value for the variant group
-  How to Read: Example: 0.06 CTR → 6% click-through rate.
+control Meaning: Metric value for control group.
 
-absolute_lift
-  Meaning: variant − control
-  How to Read: Example: 0.01 → variant improved CTR by 1 percentage point. Always based on actual data.
+variant Meaning: Metric value for treatment group.
 
-relative_lift
-  Meaning: (variant − control) / control
-  How to Read: Example: 0.01 / 0.05 = 0.2 → 20% relative improvement. Uses actual values.
+absolute_lift Formula: variant - control Interpretation: Raw difference
+between groups.
 
-p_value
-  Meaning: Statistical test p-value
-  How to Read:
-    - For proportions (ctr): z-test
-    - For ratios or continuous (cpc/cpm): t-test
-    - <0.05 → statistically significant
+relative_lift Formula: (variant - control) / control Interpretation:
+Percent improvement over control.
 
-significant
-  Meaning: Boolean flag for p-value < α
-  How to Read: True → difference is statistically significant, False → not significant
+p_value Meaning: Probability difference occurred by chance. < 0.05
+typically considered statistically significant.
 
-warning_flag
-  Meaning: Potential data issue
-  How to Read: True if metric missing, division by zero, or empty group; otherwise False
+significant Boolean flag where p_value < alpha (usually 0.05).
+
+warning_flag True if data quality issues exist (missing values, zero
+division, empty group).
+
+  -------------------------
+  STATISTICAL FOUNDATIONS
+  -------------------------
+
+Standard Deviation (std) Measures variability within a group. Low std =
+stable metric. High std = volatile metric.
+
+Standard Error (SE) SE = std / sqrt(n) Lower SE means more precise
+estimate. Larger sample size reduces SE.
+
+Confidence Interval (CI) Range likely containing true lift. If CI does
+not cross 0 → statistically significant. CI = lift ± (critical_value *
+SE)
+
+Z-Test Used for proportions (CTR, conversion rate). Assumes large sample
+size.
+
+T-Test Used for continuous metrics (revenue, CPC, CPM). Accounts for
+unknown variance.
+
+  ---------------------------------
+  MDE (Minimum Detectable Effect)
+  ---------------------------------
+
+Definition: Smallest effect size the test is powered to detect.
+
+MDE depends on: - Standard deviation - Sample size - Significance level
+(alpha) - Statistical power (1 - beta)
+
+Higher variability → larger MDE. More traffic → smaller MDE.
+
+Business Impact Example: If MDE = 1% CTR lift and average revenue per 1%
+CTR = $500K annually, then experiment must move at least $500K/year to
+be reliably detected.
+
+  ----------------
+  POWER ANALYSIS
+  ----------------
+
+Power = Probability of detecting a true effect.
+
+Typical standard: 80% power (0.80)
+
+Power depends on: - Effect size - Standard deviation - Sample size -
+Alpha level
+
+Trade-offs: Low traffic + high variability → low power. High traffic +
+stable metric → high power.
+
+Sample Size Planning: To reduce MDE or increase power: - Increase
+experiment duration - Increase traffic allocation - Reduce metric
+variability (better measurement)
+
+  ------------------------------
+  EXECUTIVE DECISION FRAMEWORK
+  ------------------------------
+
+1.  Is lift positive?
+2.  Is it statistically significant?
+3.  What is the confidence interval range?
+4.  Is lift above MDE?
+5.  Is business impact meaningful?
+6.  Any warning flags?
+
+Core Principle: Signal / Noise determines significance. Signal = lift.
+Noise = variability scaled by sample size.
+
+A/B testing evaluates whether observed lift is larger than expected
+randomness.
