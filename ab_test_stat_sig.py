@@ -83,9 +83,14 @@ def metric_calc(c, v, m):
         )[1]
 
     # ---- Ratio metrics (Welch t-test on daily ratios) ----
-    elif m_l in ["cpm", "ecpm", "rpm"]:
+    elif m_l in ["cpm", "rpm"]:
         c_daily = (c.revenue / c.impressions.replace(0, np.nan)) * 1000
         v_daily = (v.revenue / v.impressions.replace(0, np.nan)) * 1000
+        p_val = run_ttest(c_daily, v_daily)
+
+    elif m_l in ["ecpm"]:
+        c_daily = (c.revenue / c.capacity.replace(0, np.nan)) * 1000
+        v_daily = (v.revenue / v.capacity.replace(0, np.nan)) * 1000
         p_val = run_ttest(c_daily, v_daily)
 
     elif m_l == "cpc":
@@ -178,9 +183,11 @@ def ab_test_engine(source, metrics, variant_col="app_name",
 # -------------------------------
 res = ab_test_engine(
     source="GAM_MW",
-    metrics=["ctr","revenue","clicks","impressions","capacity","cpc","cpm"],
-    group_col=["page_type"],
-    filters={"page_type":["article","xhomepage"], "page_section":["news","xsports"]
+    metrics=[
+            "capacity","impressions","clicks","cpm","ecpm","ctr","cpc","revenue",
+            ], 
+    group_col=["page_section"],
+    filters={"page_type":["article"], "page_section":["news","sports"]
              #, "date": ("2026-02-01", "2026-02-07") 
             }
 )
